@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./App.css";
 
 function App() {
@@ -6,10 +7,10 @@ function App() {
   const apiKey = "0bf534a63860937de43a4b275fd04a61"; //clé site
   const [weatherData, setWeatherData] = useState([{}]); // variable données météo + obtenir la météo
   //useState = état
-  const [city, setCity] = useState(""); //variable ville et récupération de la ville
-  const[latitude, setLatitude] = useState(0);
-  const[longitude, setLongitude] = useState(0);
-
+  const [city, setCity] = useState("Liege"); //variable ville et récupération de la ville
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [forecast, setForecast] = useState({});
 
   //Fonction obtention météo , événement enter.
   const getWeather = (event) => {
@@ -25,7 +26,37 @@ function App() {
         }); // récupération des données de l'api
     }
   };
-  const dateBuilder = (d) => { //Paramètre New Date :d
+
+  useEffect(() => {
+    const fetchGeo = async () => {
+      const response = await axios.get(
+        `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`
+      );
+
+      setLatitude(response.data[0].lat);
+      setLongitude(response.data[0].lon);
+    };
+    fetchGeo();
+  }, []);
+
+  useEffect(() => {
+    const fetchFiveDays = async () => {
+      try {
+        const response = await axios.get(
+          `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`
+        );
+        console.log(response.data);
+        setForecast(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchFiveDays();
+  }, [latitude, longitude]);
+
+  const dateBuilder = (d) => {
+    //Paramètre New Date :d
     let months = [
       "January",
       "February",
@@ -57,10 +88,10 @@ function App() {
     return `${day} ${date} ${month} ${year}`;
   };
 
-  const currentPosition = (position)=> {
-    setLatitude(position.coords.latitude)
-    setLongitude(position.coords.longitude)
-  }
+  const currentPosition = (position) => {
+    setLatitude(position.coords.latitude);
+    setLongitude(position.coords.longitude);
+  };
 
   return (
     <div className="container">
@@ -79,11 +110,16 @@ function App() {
         </div>
       ) : (
         <div className="weather-data">
-          
           <p className="city">{weatherData.name}</p>
           <p>{dateBuilder(new Date())}</p>
           <p className="temp">{Math.round(weatherData.main.temp)}°C</p>
           <p className="weather">{weatherData.weather[0].main}</p>
+
+          <div>{Math.round(forecast.list[0].main.temp)}°C</div>
+          <div>{Math.round(forecast.list[8].main.temp)}°C</div>
+          <div>{Math.round(forecast.list[16].main.temp)}°C</div>
+          <div>{Math.round(forecast.list[24].main.temp)}°C</div>
+          <div>{Math.round(forecast.list[32].main.temp)}°C</div>
         </div>
       )}
 
@@ -93,18 +129,3 @@ function App() {
 }
 
 export default App;
-
-// temp_demain = jsonValeur.daily[11].temp
-// weather_demain = jsonValeur.daily[11].weather[1].description
-
-// -- Code pour afficher et convertir la date et l'heure de la prévision
-// time_prevision = jsonValeur.daily[11].dt
-// heure_prevision = (os.date("%x à %X", time_prevision))
-
-// msg = 'Le '..heure_prevision..', il fera '..temp_demain..' degres et la météo prévoit '.. weather_demain..'.'
-// daily
-//https://api.openweathermap.org/data/2.5/onecall?lat=33.44&lon=-94.04&exclude=hourly,daily&appid={API key}
-
-
-
-<div v-if=""></div>
