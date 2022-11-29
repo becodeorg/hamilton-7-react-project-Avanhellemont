@@ -5,7 +5,7 @@ import "./App.css";
 function App() {
   const apiKey = "0bf534a63860937de43a4b275fd04a61";
   const [weatherData, setWeatherData] = useState([{}]);
-  const [city, setCity] = useState("Bruxelles");
+  const [city, setCity] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [forecast, setForecast] = useState({});
@@ -103,7 +103,7 @@ function App() {
         ref={cityRef}
       />
 
-      {typeof forecast === "undefined" ? (
+      {Object.keys(forecast).length === 0 || forecast.city.name == "Globe" ? ( // si l'objet forecast est vide
         <div>
           <p>Welcome to weather app! Enter in a city to get the weather of.</p>
         </div>
