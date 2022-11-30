@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
+import Banner from "./component/Banner";
+import Search from "./component/Search";
 
 function App() {
   const apiKey = "0bf534a63860937de43a4b275fd04a61";
@@ -10,19 +12,19 @@ function App() {
   const [longitude, setLongitude] = useState(0);
   const [forecast, setForecast] = useState({});
 
-  const getWeather = (event) => {
-    if (event.key == "Enter") {
-      // fetch(
-      //   `https://api.openweathermap.org/data/2.5/weather?exclude=hourly,daily&q=${city}&units=metric&APPID=${apiKey}&lat={lat}&lon={lon}`
-      // )
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     setWeatherData(data);
-      let inputCity = cityRef.current.value;
-      console.log("city" + inputCity);
-      setCity(inputCity);
-    }
-  };
+  // const getWeather = (event) => {
+  //   if (event.key == "Enter") {
+  //     // fetch(
+  //     //   `https://api.openweathermap.org/data/2.5/weather?exclude=hourly,daily&q=${city}&units=metric&APPID=${apiKey}&lat={lat}&lon={lon}`
+  //     // )
+  //     //   .then((response) => response.json())
+  //     //   .then((data) => {
+  //     //     setWeatherData(data);
+  //     let inputCity = cityRef.current.value;
+  //     console.log("city" + inputCity);
+  //     setCity(inputCity);
+  //   }
+  // };
   useEffect(() => {
     const fetchGeo = async () => {
       console.log("GEO" + city);
@@ -51,6 +53,7 @@ function App() {
     };
     console.log(longitude + " " + latitude);
     console.log("làààbass");
+
     fetchFiveDays();
   }, [latitude, longitude]);
 
@@ -90,30 +93,25 @@ function App() {
   //   setLatitude(position.coords.latitude);
   //   setLongitude(position.coords.longitude);
   // };
-  const cityRef = useRef(null);
-
+  // const cityRef = useRef(null);
   return (
-    <div className="container">
-      <input
-        className="input"
-        placeholder="Enter City..."
-        type="text"
-        defaultValue={city} // récupère la valeur : city
-        onKeyPress={getWeather}
-        ref={cityRef}
-      />
+    <div className="WeatherApp">
+      <Banner />
+      <Search city={city} setCity={setCity} />
+
 
       {Object.keys(forecast).length === 0 || forecast.city.name == "Globe" ? ( // si l'objet forecast est vide
-        <div>
-          <p>Welcome to weather app! Enter in a city to get the weather of.</p>
-        </div>
+        <>
+        </>
       ) : (
         <div className="weather-data">
+          <div>{forecast.city.name} </div>
           {/* <p className="city">{weatherData.name}</p> */}
           {/* <p>{dateBuilder(new Date())}</p> */}
           {/* <p className="temp">{Math.round(weatherData.main.temp)}°C</p>
           <p className="weather">{weatherData.weather[0].main}</p> */}
-          <div></div>
+
+          <div>{forecast.list[0].dt_txt.slice(0, 10)}</div>
           <div>{Math.round(forecast.list[0].main.temp)}°C</div>
           <div></div>
           <div>{Math.round(forecast.list[8].main.temp)}°C</div>

@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
 .container {
   display: flex;
   flex-direction: column;
@@ -40,4 +45,4 @@
 .weather {
   font-size: 30px;
   font-weight: 200;
-}
+}  */
